@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+bundle exec rake gem:native
+
+echo
+echo "Cross-compiled native gem matrix verification complete"

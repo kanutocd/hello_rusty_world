@@ -1,0 +1,12 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: docker/dev/Dockerfile
+
+    volumes:
+      - .:/workspace
+
+    working_dir: /workspace
+
+    tty: true

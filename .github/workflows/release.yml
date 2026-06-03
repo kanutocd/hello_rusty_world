@@ -1,0 +1,112 @@
+name: Gem Release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test Ruby ${{ matrix.ruby }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        ruby: ["3.4", "4.0.5"]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+          cargo-cache: true
+
+      - name: Run default checks
+        run: bundle exec rake
+
+  build-gems:
+    name: Build source and native gems
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - uses: oxidize-rb/actions/setup-ruby-and-rust@v1
+        with:
+          ruby-version: "4.0.5"
+          bundler-cache: true
+          cargo-cache: true
+
+      - name: Build source and cross-compiled native gems
+        run: bin/dev-check-cross
+
+      - name: Validate package output
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version="$(ruby -r ./lib/hello_rusty_world/version -e 'print HelloRustyWorld::VERSION')"
+          expected=(
+            "pkg/hello_rusty_world-${version}.gem"
+            "pkg/hello_rusty_world-${version}-x86_64-linux.gem"
+            "pkg/hello_rusty_world-${version}-aarch64-linux.gem"
+            "pkg/hello_rusty_world-${version}-x86_64-darwin.gem"
+            "pkg/hello_rusty_world-${version}-arm64-darwin.gem"
+            "pkg/hello_rusty_world-${version}-x64-mingw-ucrt.gem"
+          )
+
+          for gem in "${expected[@]}"; do
+            test -f "$gem"
+          done
+
+          actual_count="$(find pkg -maxdepth 1 -name "*.gem" | wc -l)"
+          test "$actual_count" -eq "${#expected[@]}"
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ruby-gems
+          path: pkg/*.gem
+          if-no-files-found: error
+
+  release:
+    name: Release gems to RubyGems.org
+    runs-on: ubuntu-latest
+    needs: build-gems
+    permissions:
+      contents: read
+      id-token: write
+    environment:
+      name: release
+      url: https://rubygems.org/gems/hello_rusty_world
+    steps:
+      - uses: actions/download-artifact@v7
+        with:
+          name: ruby-gems
+          path: pkg
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "4.0.5"
+
+      - name: Configure RubyGems credentials
+        uses: rubygems/configure-rubygems-credentials@v2.0.0
+
+      - name: Publish gems to RubyGems.org
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for gem in pkg/*.gem; do
+            gem push "$gem"
+          done

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+platform="${RUBY_TARGET:-$(ruby -e 'print Gem::Platform.local.to_s')}"
+
+bundle exec rake "native:hello_rusty_world:${platform}"
+
+echo
+echo "Native gem verification complete for ${platform}"
