@@ -10,12 +10,13 @@ Gem::Specification.new do |spec|
 
   spec.summary = "A Hello World Ruby Gem with Rust extension"
   spec.description = "A Hello World Ruby Gem with Rust extension"
-  spec.homepage = "https://github.com/kanutocd/hello_rusty_world"
+  spec.homepage = "https://kanutocd.github.com/hello_rusty_world"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.4"
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = spec.homepage
-  spec.metadata["changelog_uri"] = spec.homepage
+  spec.metadata["source_code_uri"] = "https://github.com/kanutocd/hello_rusty_world"
+  spec.metadata["changelog_uri"] = "https://github.com/kanutocd/hello_rusty_world/blob/trunk/CHANGELOG.md"
+
 
   # Uncomment the line below to require MFA for gem pushes.
   # This helps protect your gem from supply chain attacks by ensuring

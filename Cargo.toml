@@ -6,8 +6,11 @@
 members = ["./ext/hello_rusty_world"]
 resolver = "2"
 
+[profile.dev]
+debug = true
+
 [profile.release]
 # By default, debug symbols are stripped from the final binary which makes it
 # harder to debug if something goes wrong. It's recommended to keep debug
 # symbols in the release build so that you can debug the final binary if needed.
-debug = true
+debug = false

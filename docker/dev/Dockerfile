@@ -25,7 +25,7 @@ RUN rustup target add \
     x86_64-unknown-linux-gnu \
     aarch64-unknown-linux-gnu \
     x86_64-unknown-linux-musl \
-    aarch64-unknown-linux-musl
+    aarch64-unknown-linux-musl 
 
 RUN groupadd --gid ${USER_GID} ${USERNAME}
 RUN useradd --uid ${USER_UID} \
