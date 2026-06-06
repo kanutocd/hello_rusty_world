@@ -23,8 +23,7 @@ jobs:
         with:
           supported-ruby-platforms: |
             exclude: ["arm-linux", "aarch64-mingw-ucrt"]
-          stable-ruby-versions: |
-            exclude: ["head"]
+          stable-ruby-versions: ["3.4", "4.0"]
 
   source-gem:
     runs-on: ubuntu-latest
