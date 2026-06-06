@@ -3,7 +3,7 @@
 module HelloRustyWorld
   class Greeting
     def say
-      puts "Hello World!"
+      "Hello World!"
     end
   end
 end

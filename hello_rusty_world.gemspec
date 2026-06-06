@@ -17,7 +17,6 @@ Gem::Specification.new do |spec|
   spec.metadata["source_code_uri"] = "https://github.com/kanutocd/hello_rusty_world"
   spec.metadata["changelog_uri"] = "https://github.com/kanutocd/hello_rusty_world/blob/trunk/CHANGELOG.md"
 
-
   # Uncomment the line below to require MFA for gem pushes.
   # This helps protect your gem from supply chain attacks by ensuring
   # no one can publish a new version without multi-factor authentication.

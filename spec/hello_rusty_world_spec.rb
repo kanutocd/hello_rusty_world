@@ -6,8 +6,8 @@ RSpec.describe HelloRustyWorld do
   end
 
   it "can call into Rust" do
-    result = HelloRustyWorld.hello("world")
+    result = HelloRustyWorld::Greeting.new.say
 
-    expect(result).to eq("Hello world, from Rust!")
+    expect(result).to eq("Hello World!")
   end
 end
