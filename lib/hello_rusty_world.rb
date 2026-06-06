@@ -4,15 +4,17 @@ module HelloRustyWorld
   class Error < StandardError; end
 
   class << self
-  
     def load_native_extension
-      @native_enabled = true
       ruby_api_ver = RbConfig::CONFIG.fetch("ruby_version").split(".", 3)[0, 2].join(".")
-      require_relative "hello_rusty_world/#{ruby_api_ver}/hello_rusty_world"    
-    rescue LoadError
-      require_relative "hello_rusty_world/hello_rusty_world"    
+      require_relative "hello_rusty_world/#{ruby_api_ver}/hello_rusty_world"
+      @native_enabled = true
     rescue LoadError
       @native_enabled = false
+    ensure
+      unless @native_enabled
+        require_relative "hello_rusty_world/hello_rusty_world"
+        @native_enabled = true
+      end
     end
 
     def native_enabled?
